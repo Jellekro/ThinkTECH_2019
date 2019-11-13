@@ -48,9 +48,6 @@ def my_fun():
           label3 = tk.Label(self, text="The factor that has improved your score most is: timely rent payments")
           label3.place(x=0, y=40)
 
-          label4 = tk.Label(self, text="Click here to see a detailed summary of all factors used in this calculation.")
-          label4.place(x=0, y=60)
-
           w.create_line(50, 350, 50, 50, tags="xaxis")
           w.create_line(50, 350, 550, 350, tags="yaxis")
           scores = [345, 300, 270, 220, 180, 100]
@@ -129,7 +126,7 @@ def my_fun():
           b2 = tk.Button(buttonframe, text="Analytics", command=p2.lift)
           b3 = tk.Button(buttonframe, text="Score Calculation", command=p3.lift)
           b4 = tk.Button(buttonframe, text="Blockchain", command=p4.lift)
-          b5 =tk.Button(buttonframe, text="Transfer Score", command=p5.lift)
+          b5 = tk.Button(buttonframe, text="Transfer Score", command=p5.lift)
 
           b1.pack(side="left")
           b2.pack(side="left")
@@ -172,8 +169,6 @@ class LoginFrame(Frame):
 
         self.pack()
         
-
-        
     def _login_btn_clicked(self):
         # print("Clicked")
         username = self.entry_username.get()
@@ -187,6 +182,7 @@ class LoginFrame(Frame):
             # window = Tk()
             # window.geometry('700x700')
             # window.title("Welcome to SmartScore")
+            self.master.destroy()
             my_fun()
             #
             #
@@ -212,8 +208,18 @@ class LoginFrame(Frame):
             #keep loop running
             #window.mainloop()
 
+def logscreen():
+    newwindow = Tk()
+    newwindow.title("Log in Screen")
+    LoginFrame(newwindow)
 
 root = Tk()
 root.title("SmartScore Web UI")
-lf = LoginFrame(root)
+root.geometry('400x700')
+Label(root, text="Smart Score", font="none 30 bold").place(x=200, y=300, anchor=CENTER)
+Label(root, text="Launched by HSBC Canada", font="none 15 bold").place(x=200, y=600, anchor=CENTER)
+login = Button(root, text="Log In", command=logscreen)
+login.pack(side=LEFT, anchor=S, fill=X)
+exit = Button(root, text="Exit", command=root.destroy)
+exit.pack(side=RIGHT, anchor=S, fill=X)
 root.mainloop()
