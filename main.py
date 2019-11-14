@@ -86,15 +86,19 @@ def my_fun():
       def __init__(self, *args, **kwargs):
           Page.__init__(self, *args, **kwargs)
           w = Canvas(self, width=400, height=650)
-          w.pack(side=BOTTOM)
+          w.pack(side=BOTTOM, pady=10)
           user_name = "user1"
           file_name = "UserData.json"
+          accumulator = 0
           chain = SmartBlockChain(user_name, file_name)
           for block_of_json in chain.decode_block_chain()[user_name]:
-              textbox = tk.Text(w, wrap=WORD)
-              textbox.insert(INSERT, block_of_json)
-              textbox.config(state=DISABLED)
-              textbox.pack(side=TOP, expand=TRUE)
+              Label(w, text="Change in score:", bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator, column=0, sticky=W+E)
+              Label(w, text=block_of_json["score_delta"], bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator+1, column=0, sticky=W+E)
+              Label(w, text="Factor:", bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator+2, column=0, sticky=W+E)
+              Label(w, text=block_of_json["factor_type"], bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator+3, column=0, sticky=W+E, pady=(0,5))
+              Label(w, text="Information:", bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator, column=1, sticky=W+E)
+              Label(w, text=block_of_json["data"], bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator+1, column=1, rowspan=3, sticky=W+E+S+N, pady=(0,5))
+              accumulator = accumulator+4
 
   class Page5(Page):
       def __init__(self, *args, **kwargs):
@@ -104,6 +108,20 @@ def my_fun():
           label = tk.Label(self, text="Transfer score")
           label.pack(side="bottom", fill="both")
 
+  class Page6(Page):
+      def __init__(self, *args, **kwargs):
+          Page.__init__(self, *args, **kwargs)
+          self.label_username = Label(self, text="Score Change")
+          self.label_password = Label(self, text="Factor")
+
+          self.entry_username = Entry(self)
+          self.entry_password = Entry(self)
+
+          self.label_username.grid(row=0, sticky=E)
+          self.label_password.grid(row=1, sticky=E)
+          self.entry_username.grid(row=0, column=1)
+          self.entry_password.grid(row=1, column=1)
+
   class MainView(tk.Frame):
       def __init__(self, *args, **kwargs):
           tk.Frame.__init__(self, *args, **kwargs)
@@ -112,6 +130,7 @@ def my_fun():
           p3 = Page3(self)
           p4 = Page4(self)
           p5 = Page5(self)
+          p6 = Page6(self)
           
           buttonframe = tk.Frame(self)
           container = tk.Frame(self)
@@ -123,18 +142,21 @@ def my_fun():
           p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
           p4.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
           p5.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
+          p6.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
           b1 = tk.Button(buttonframe, text="Score", command=p1.lift)
           b2 = tk.Button(buttonframe, text="Analytics", command=p2.lift)
           b3 = tk.Button(buttonframe, text="Calculations", command=p3.lift)
           b4 = tk.Button(buttonframe, text="Blocks", command=p4.lift)
           b5 = tk.Button(buttonframe, text="Transfer", command=p5.lift)
+          b6 = tk.Button(buttonframe, text="Add", command=p6.lift)
 
           b1.pack(side="left")
           b2.pack(side="left")
           b3.pack(side="left")
           b4.pack(side="left")
           b5.pack(side="left")
+          b6.pack(side="left")
 
           p2.show()
 
@@ -199,6 +221,7 @@ logo = PhotoImage(file="logo.png")
 Label(root, image=logo, bg="white").place(x=120, y=280)
 loginp = PhotoImage(file="login.png")
 exitp = PhotoImage(file="exit.png")
+creditscore = 700
 login = Button(root, image=loginp, command=logscreen)
 login.place(x=100, y=675, anchor=CENTER)
 exit = Button(root, image=exitp, command=root.destroy)
