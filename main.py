@@ -91,7 +91,9 @@ def my_fun():
           file_name = "UserData.json"
           accumulator = 0
           chain = SmartBlockChain(user_name, file_name)
+          temp_smartscore = 700
           for block_of_json in chain.decode_block_chain()[user_name]:
+              temp_smartscore += block_of_json["score_delta"]
               Label(w, text="Change in score:", bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator, column=0, sticky=W+E)
               Label(w, text=block_of_json["score_delta"], bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator+1, column=0, sticky=W+E)
               Label(w, text="Factor:", bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator+2, column=0, sticky=W+E)
@@ -99,6 +101,12 @@ def my_fun():
               Label(w, text="Information:", bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator, column=1, sticky=W+E)
               Label(w, text=block_of_json["data"], bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator+1, column=1, rowspan=3, sticky=W+E+S+N, pady=(0,5))
               accumulator = accumulator+4
+          house_loan_threshold = 702
+          if (temp_smartscore >= house_loan_threshold):
+              textbox = tk.Text(self, wrap=WORD)
+              textbox.insert(INSERT, str("Congratulations! With a score of at least {} you qualify for a house loan.").format(house_loan_threshold))
+              textbox.config(state=DISABLED)
+              textbox.pack(side=TOP, expand=TRUE)
 
   class Page5(Page):
       def __init__(self, *args, **kwargs):
@@ -221,7 +229,6 @@ logo = PhotoImage(file="logo.png")
 Label(root, image=logo, bg="white").place(x=120, y=280)
 loginp = PhotoImage(file="login.png")
 exitp = PhotoImage(file="exit.png")
-creditscore = 700
 login = Button(root, image=loginp, command=logscreen)
 login.place(x=100, y=675, anchor=CENTER)
 exit = Button(root, image=exitp, command=root.destroy)
