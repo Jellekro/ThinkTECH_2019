@@ -8,6 +8,8 @@ Created on Sat Nov  9 11:20:45 2019
 from tkinter import *
 import tkinter as tk
 import tkinter.messagebox as tm
+from SmartBlockChain import SmartBlockChain
+from SmartBlock import SmartBlock
 
 def my_fun():
 
@@ -83,10 +85,16 @@ def my_fun():
   class Page4(Page):
       def __init__(self, *args, **kwargs):
           Page.__init__(self, *args, **kwargs)
-          w = Canvas(self, width=400, height=360)
+          w = Canvas(self, width=400, height=650)
           w.pack(side=BOTTOM)
-          label = tk.Label(self, text="Block chain visualization")
-          label.pack(side="bottom", fill="both")
+          user_name = "user1"
+          file_name = "UserData.json"
+          chain = SmartBlockChain(user_name, file_name)
+          for block_of_json in chain.decode_block_chain()[user_name]:
+              textbox = tk.Text(w, wrap=WORD)
+              textbox.insert(INSERT, block_of_json)
+              textbox.config(state=DISABLED)
+              textbox.pack(side=TOP, expand=TRUE)
 
   class Page5(Page):
       def __init__(self, *args, **kwargs):
