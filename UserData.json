@@ -4,5 +4,5 @@
 {"score_delta":-2, "factor_type":"house loan default", "data":{"status":"CRISIS"}},
 {"score_delta":-3, "factor_type":"transaction", "data":{"amount":-13, "item":"yummy fish"}},
 {"score_delta":4, "factor_type":"transaction", "data":{"amount":55, "item": "art" }},
-{"score_delta":10, "factor_type":"inflow of money", "data":{"amount":1300}},
-{"score_delta":-10, "factor_type":"outflow of money", "data":{"amount":-1000}}]}
+{"score_delta":-10, "factor_type":"inflow of money", "data":{"amount":1300}},
+{"score_delta":12, "factor_type":"inflow of money", "data":{"amount":200}}]}

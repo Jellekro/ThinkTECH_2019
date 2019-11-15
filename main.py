@@ -39,18 +39,30 @@ def my_fun():
           w.pack(side=BOTTOM)
           label = tk.Label(self, text="Average Score Trends", bg="Light Pink")
           label.place(x=200, y=350, anchor=CENTER)
-          analytics = PhotoImage(file="analytics.png")
-          label1 = tk.Label(self, image=analytics)
-          label1.image = analytics
-          label1.place(x=200,y=150, anchor=CENTER)
 
           w.create_line(50, 350, 50, 50, tags="xaxis")
           w.create_line(50, 350, 350, 350, tags="yaxis")
-          scores = [345, 300, 270, 220, 180, 100]
+
+          scores = []
+          for block_of_json in chain.decode_block_chain()[user_name]:
+              scores.append(block_of_json["score_delta"])
           accumulator = 50
-          for x in range(1, len(scores)):
-              w.create_line(accumulator, scores[x - 1], accumulator + 60, scores[x], tags="graph", activewidth=2)
-              accumulator += 60
+          init_score = 250
+          init_real_score = 700
+          for x in range(0, len(scores)):
+              w.create_line(accumulator, init_score, accumulator + 300/len(scores), init_score-scores[x]*5, activewidth=2)
+              accumulator += 300/len(scores)
+              init_score = init_score-scores[x]*5
+              init_real_score += scores[x]
+          house_loan_threshold = 702
+          label1 = Label(self, text="Your current score is: {}".format(init_real_score), font="Roboto 20 bold")
+          label1.pack(side=TOP)
+          if init_real_score >= house_loan_threshold:
+              textbox = tk.Text(self, wrap=WORD)
+              textbox.insert(INSERT, str("Congratulations! With a score of at least {} you qualify for a 2 year HSBC personal loan.").format(
+                                 house_loan_threshold))
+              textbox.config(state=DISABLED)
+              textbox.pack(side=TOP)
 
   class Page3(Page):
       def __init__(self, *args, **kwargs):
@@ -85,12 +97,9 @@ def my_fun():
   class Page4(Page):
       def __init__(self, *args, **kwargs):
           Page.__init__(self, *args, **kwargs)
-          w = Canvas(self, width=400, height=650)
+          w = Canvas(self, width=400, height=600)
           w.pack(side=BOTTOM, pady=10)
-          user_name = "user1"
-          file_name = "UserData.json"
           accumulator = 0
-          chain = SmartBlockChain(user_name, file_name)
           temp_smartscore = 700
           for block_of_json in chain.decode_block_chain()[user_name]:
               temp_smartscore += block_of_json["score_delta"]
@@ -101,12 +110,12 @@ def my_fun():
               Label(w, text="Information:", bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator, column=1, sticky=W+E)
               Label(w, text=block_of_json["data"], bg="Light Pink", borderwidth=1, relief="solid").grid(row=accumulator+1, column=1, rowspan=3, sticky=W+E+S+N, pady=(0,5))
               accumulator = accumulator+4
-          house_loan_threshold = 702
-          if (temp_smartscore >= house_loan_threshold):
-              textbox = tk.Text(self, wrap=WORD)
-              textbox.insert(INSERT, str("Congratulations! With a score of at least {} you qualify for a house loan.").format(house_loan_threshold))
-              textbox.config(state=DISABLED)
-              textbox.pack(side=TOP, expand=TRUE)
+          # house_loan_threshold = 702
+          # if (temp_smartscore >= house_loan_threshold):
+          #     textbox = tk.Text(self, wrap=WORD)
+          #     textbox.insert(INSERT, str("Congratulations! With a score of at least {} you qualify for a house loan.").format(house_loan_threshold))
+          #     textbox.config(state=DISABLED)
+          #     textbox.pack(side=TOP, expand=TRUE)
 
   class Page5(Page):
       def __init__(self, *args, **kwargs):
@@ -116,20 +125,6 @@ def my_fun():
           label = tk.Label(self, text="Transfer score")
           label.pack(side="bottom", fill="both")
 
-  class Page6(Page):
-      def __init__(self, *args, **kwargs):
-          Page.__init__(self, *args, **kwargs)
-          self.label_username = Label(self, text="Score Change")
-          self.label_password = Label(self, text="Factor")
-
-          self.entry_username = Entry(self)
-          self.entry_password = Entry(self)
-
-          self.label_username.grid(row=0, sticky=E)
-          self.label_password.grid(row=1, sticky=E)
-          self.entry_username.grid(row=0, column=1)
-          self.entry_password.grid(row=1, column=1)
-
   class MainView(tk.Frame):
       def __init__(self, *args, **kwargs):
           tk.Frame.__init__(self, *args, **kwargs)
@@ -138,8 +133,7 @@ def my_fun():
           p3 = Page3(self)
           p4 = Page4(self)
           p5 = Page5(self)
-          p6 = Page6(self)
-          
+
           buttonframe = tk.Frame(self)
           container = tk.Frame(self)
           buttonframe.pack(side="top", fill="x", expand=False)
@@ -150,21 +144,18 @@ def my_fun():
           p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
           p4.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
           p5.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
-          p6.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
           b1 = tk.Button(buttonframe, text="Score", command=p1.lift)
           b2 = tk.Button(buttonframe, text="Analytics", command=p2.lift)
           b3 = tk.Button(buttonframe, text="Calculations", command=p3.lift)
           b4 = tk.Button(buttonframe, text="Blocks", command=p4.lift)
           b5 = tk.Button(buttonframe, text="Transfer", command=p5.lift)
-          b6 = tk.Button(buttonframe, text="Add", command=p6.lift)
 
           b1.pack(side="left")
           b2.pack(side="left")
           b3.pack(side="left")
           b4.pack(side="left")
           b5.pack(side="left")
-          b6.pack(side="left")
 
           p2.show()
 
@@ -226,6 +217,9 @@ Label(root, text="Score", font="Roboto 30 bold").place(x=230, y=330, anchor=CENT
 Label(root, text="Launched by", font="Roboto 15").place(x=200, y=600, anchor=CENTER)
 Label(root, text="HSBC Canada", font="Roboto 15 bold").place(x=200, y=630, anchor=CENTER)
 logo = PhotoImage(file="logo.png")
+user_name = "user1"
+file_name = "UserData.json"
+chain = SmartBlockChain(user_name, file_name)
 Label(root, image=logo, bg="white").place(x=120, y=280)
 loginp = PhotoImage(file="login.png")
 exitp = PhotoImage(file="exit.png")
